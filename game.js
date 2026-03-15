@@ -110,13 +110,13 @@ function createcursor(world) {
 }
 function createboard(world) {
   const eid = world.createEntity();
-  world.addComponent(eid, "Board", {"grid":{"cols":8,"rows":8,"cells":[]}});
+  world.addComponent(eid, "Board", {});
   return eid;
 }
 
 // Systems (execution order)
-// [0] spawn (type: custom)
-//     code: "function spawnChessPieces(world) { const pieces = [{ archetype: 'whiteRook', x: 0, y: 7 }, { archetype: 'whiteKnight', x: 1, y: 7 }, { archetype: 'whiteBishop', x: 2, y: 7 }, { archetype: 'whiteQueen', x: 3, y: 7 }, { archetype: 'whiteKing', x: 4, y: 7 }, { archetype: 'whiteBishop', x: 5, y: 7 }, { archetype: 'whiteKnight', x: 6, y: 7 }, { archetype: 'whiteRook', x: 7, y: 7 }, { archetype: 'whitePawn', x: 0, y: 6 }, { archetype: 'whitePawn', x: 1, y: 6 }, { archetype: 'whitePawn', x: 2, y: 6 }, { archetype: 'whitePawn', x: 3, y: 6 }, { archetype: 'whitePawn', x: 4, y: 6 }, { archetype: 'whitePawn', x: 5, y: 6 }, { archetype: 'whitePawn', x: 6, y: 6 }, { archetype: 'whitePawn', x: 7, y: 6 }, { archetype: 'blackRook', x: 0, y: 0 }, { archetype: 'blackKnight', x: 1, y: 0 }, { archetype: 'blackBishop', x: 2, y: 0 }, { archetype: 'blackQueen', x: 3, y: 0 }, { archetype: 'blackKing', x: 4, y: 0 }, { archetype: 'blackBishop', x: 5, y: 0 }, { archetype: 'blackKnight', x: 6, y: 0 }, { archetype: 'blackRook', x: 7, y: 0 }, { archetype: 'blackPawn', x: 0, y: 1 }, { archetype: 'blackPawn', x: 1, y: 1 }, { archetype: 'blackPawn', x: 2, y: 1 }, { archetype: 'blackPawn', x: 3, y: 1 }, { archetype: 'blackPawn', x: 4, y: 1 }, { archetype: 'blackPawn', x: 5, y: 1 }, { archetype: 'blackPawn', x: 6, y: 1 }, { archetype: 'blackPawn', x: 7, y: 1 }, { archetype: 'cursor', x: 4, y: 4 }, { archetype: 'board', x: 0, y: 0 }]; pieces.forEach(piece => { const eid = world.createEntity(); if (piece.archetype === 'cursor') { world.addComponent(eid, 'Position', { x: piece.x, y: piece.y }); world.addComponent(eid, 'Cursor', { color: '#ff0' }); } else if (piece.archetype === 'board') { world.addComponent(eid, 'Board', { grid: { cols: 8, rows: 8, cells: [] } }); } else { world.addComponent(eid, 'Position', { x: piece.x, y: piece.y }); const pieceType = piece.archetype.replace('white', '').replace('black', '').toLowerCase(); const color = piece.archetype.includes('white') ? 'white' : 'black'; const chars = { white: { pawn: '♙', rook: '♖', knight: '♘', bishop: '♗', queen: '♕', king: '♔' }, black: { pawn: '♟', rook: '♜', knight: '♞', bishop: '♝', queen: '♛', king: '♚' } }; world.addComponent(eid, 'ChessPiece', { type: pieceType, color: color, hasMoved: false, displayChar: chars[color][pieceType] }); } }); }"
+// [0] spawn (type: spawn)
+//     entities: [large config]
 // [1] input (type: input)
 //     target: "cursor"
 //     actions: {"up":{"move":[0,-1]},"down":{"move":[0,1]},"left":{"move":[-1,0]},"right":{"move":[1,0]},"select":{"action":"selectOrMove"}}
@@ -131,7 +131,7 @@ function createboard(world) {
 // [5] gameOver (type: gameOver)
 //     condition: "state.gameOver"
 // [6] render (type: render)
-//     layers: [{"source":"board","type":"chessBoard","lightSquares":"#f0d9b5","darkSquares":"#b58863"},{"source":"ChessPiece","type":"piece"},{"source":"cursor","type":"highlight"},{"source":"Selected","type":"highlight","color":"#0f0"},{"source":"state","type":"hud","fields":["currentTurn","moveCount"]}]
+//     layers: [large config]
 
 // Game rules
 // on "pieceCaptured" => { increment: {"state.score":"event.value"} }
