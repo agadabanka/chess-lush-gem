@@ -1,0 +1,684 @@
+{
+  "meta": {
+    "name": "Chess",
+    "version": "1.0.0",
+    "description": "Classic chess game with piece movement and capture mechanics"
+  },
+  "config": {
+    "display": {
+      "type": "grid",
+      "width": 8,
+      "height": 8,
+      "cellSize": 60,
+      "background": "#f0d9b5"
+    },
+    "timing": {
+      "tickRate": 1000
+    },
+    "input": {
+      "select": {
+        "keys": [
+          " ",
+          "Enter"
+        ]
+      },
+      "up": {
+        "keys": [
+          "ArrowUp",
+          "w"
+        ]
+      },
+      "down": {
+        "keys": [
+          "ArrowDown",
+          "s"
+        ]
+      },
+      "left": {
+        "keys": [
+          "ArrowLeft",
+          "a"
+        ]
+      },
+      "right": {
+        "keys": [
+          "ArrowRight",
+          "d"
+        ]
+      },
+      "restart": {
+        "keys": [
+          "r",
+          "R"
+        ]
+      }
+    }
+  },
+  "componentTypes": {
+    "Position": {
+      "fields": {
+        "x": {
+          "type": "int",
+          "default": 0
+        },
+        "y": {
+          "type": "int",
+          "default": 0
+        }
+      }
+    },
+    "ChessPiece": {
+      "fields": {
+        "type": {
+          "type": "enum",
+          "enum": [
+            "pawn",
+            "rook",
+            "knight",
+            "bishop",
+            "queen",
+            "king"
+          ]
+        },
+        "color": {
+          "type": "enum",
+          "enum": [
+            "white",
+            "black"
+          ]
+        },
+        "hasMoved": {
+          "type": "bool",
+          "default": false
+        },
+        "displayChar": {
+          "type": "string"
+        }
+      }
+    },
+    "Selected": {
+      "fields": {}
+    },
+    "Cursor": {
+      "fields": {
+        "color": {
+          "type": "color",
+          "default": "#ff0"
+        }
+      }
+    },
+    "Board": {
+      "fields": {
+        "grid": {
+          "type": "grid",
+          "dimensions": {
+            "widthRef": "config.display.width",
+            "heightRef": "config.display.height"
+          }
+        }
+      }
+    }
+  },
+  "archetypes": {
+    "whitePawn": {
+      "components": {
+        "Position": {
+          "x": 0,
+          "y": 6
+        },
+        "ChessPiece": {
+          "type": "pawn",
+          "color": "white",
+          "displayChar": "♙"
+        }
+      }
+    },
+    "blackPawn": {
+      "components": {
+        "Position": {
+          "x": 0,
+          "y": 1
+        },
+        "ChessPiece": {
+          "type": "pawn",
+          "color": "black",
+          "displayChar": "♟"
+        }
+      }
+    },
+    "whiteRook": {
+      "components": {
+        "Position": {
+          "x": 0,
+          "y": 7
+        },
+        "ChessPiece": {
+          "type": "rook",
+          "color": "white",
+          "displayChar": "♖"
+        }
+      }
+    },
+    "blackRook": {
+      "components": {
+        "Position": {
+          "x": 0,
+          "y": 0
+        },
+        "ChessPiece": {
+          "type": "rook",
+          "color": "black",
+          "displayChar": "♜"
+        }
+      }
+    },
+    "whiteKnight": {
+      "components": {
+        "Position": {
+          "x": 1,
+          "y": 7
+        },
+        "ChessPiece": {
+          "type": "knight",
+          "color": "white",
+          "displayChar": "♘"
+        }
+      }
+    },
+    "blackKnight": {
+      "components": {
+        "Position": {
+          "x": 1,
+          "y": 0
+        },
+        "ChessPiece": {
+          "type": "knight",
+          "color": "black",
+          "displayChar": "♞"
+        }
+      }
+    },
+    "whiteBishop": {
+      "components": {
+        "Position": {
+          "x": 2,
+          "y": 7
+        },
+        "ChessPiece": {
+          "type": "bishop",
+          "color": "white",
+          "displayChar": "♗"
+        }
+      }
+    },
+    "blackBishop": {
+      "components": {
+        "Position": {
+          "x": 2,
+          "y": 0
+        },
+        "ChessPiece": {
+          "type": "bishop",
+          "color": "black",
+          "displayChar": "♝"
+        }
+      }
+    },
+    "whiteQueen": {
+      "components": {
+        "Position": {
+          "x": 3,
+          "y": 7
+        },
+        "ChessPiece": {
+          "type": "queen",
+          "color": "white",
+          "displayChar": "♕"
+        }
+      }
+    },
+    "blackQueen": {
+      "components": {
+        "Position": {
+          "x": 3,
+          "y": 0
+        },
+        "ChessPiece": {
+          "type": "queen",
+          "color": "black",
+          "displayChar": "♛"
+        }
+      }
+    },
+    "whiteKing": {
+      "components": {
+        "Position": {
+          "x": 4,
+          "y": 7
+        },
+        "ChessPiece": {
+          "type": "king",
+          "color": "white",
+          "displayChar": "♔"
+        }
+      }
+    },
+    "blackKing": {
+      "components": {
+        "Position": {
+          "x": 4,
+          "y": 0
+        },
+        "ChessPiece": {
+          "type": "king",
+          "color": "black",
+          "displayChar": "♚"
+        }
+      }
+    },
+    "cursor": {
+      "singleton": true,
+      "components": {
+        "Position": {
+          "x": 4,
+          "y": 4
+        },
+        "Cursor": {
+          "color": "#ff0"
+        }
+      }
+    },
+    "board": {
+      "singleton": true,
+      "components": {
+        "Board": {}
+      }
+    }
+  },
+  "resources": {
+    "state": {
+      "score": 0,
+      "level": 1,
+      "gameOver": false,
+      "currentTurn": "white",
+      "whiteInCheck": false,
+      "blackInCheck": false,
+      "moveCount": 0
+    }
+  },
+  "systems": [
+    {
+      "name": "spawn",
+      "type": "spawn",
+      "config": {
+        "initialSetup": [
+          {
+            "archetype": "whiteRook",
+            "positions": [
+              [
+                0,
+                7
+              ],
+              [
+                7,
+                7
+              ]
+            ]
+          },
+          {
+            "archetype": "blackRook",
+            "positions": [
+              [
+                0,
+                0
+              ],
+              [
+                7,
+                0
+              ]
+            ]
+          },
+          {
+            "archetype": "whiteKnight",
+            "positions": [
+              [
+                1,
+                7
+              ],
+              [
+                6,
+                7
+              ]
+            ]
+          },
+          {
+            "archetype": "blackKnight",
+            "positions": [
+              [
+                1,
+                0
+              ],
+              [
+                6,
+                0
+              ]
+            ]
+          },
+          {
+            "archetype": "whiteBishop",
+            "positions": [
+              [
+                2,
+                7
+              ],
+              [
+                5,
+                7
+              ]
+            ]
+          },
+          {
+            "archetype": "blackBishop",
+            "positions": [
+              [
+                2,
+                0
+              ],
+              [
+                5,
+                0
+              ]
+            ]
+          },
+          {
+            "archetype": "whiteQueen",
+            "positions": [
+              [
+                3,
+                7
+              ]
+            ]
+          },
+          {
+            "archetype": "blackQueen",
+            "positions": [
+              [
+                3,
+                0
+              ]
+            ]
+          },
+          {
+            "archetype": "whiteKing",
+            "positions": [
+              [
+                4,
+                7
+              ]
+            ]
+          },
+          {
+            "archetype": "blackKing",
+            "positions": [
+              [
+                4,
+                0
+              ]
+            ]
+          },
+          {
+            "archetype": "whitePawn",
+            "positions": [
+              [
+                0,
+                6
+              ],
+              [
+                1,
+                6
+              ],
+              [
+                2,
+                6
+              ],
+              [
+                3,
+                6
+              ],
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ],
+              [
+                6,
+                6
+              ],
+              [
+                7,
+                6
+              ]
+            ]
+          },
+          {
+            "archetype": "blackPawn",
+            "positions": [
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                1
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                4,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                6,
+                1
+              ],
+              [
+                7,
+                1
+              ]
+            ]
+          },
+          {
+            "archetype": "cursor",
+            "positions": [
+              [
+                4,
+                4
+              ]
+            ]
+          },
+          {
+            "archetype": "board",
+            "positions": [
+              [
+                0,
+                0
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "input",
+      "type": "input",
+      "config": {
+        "target": "cursor",
+        "actions": {
+          "up": {
+            "move": [
+              0,
+              -1
+            ]
+          },
+          "down": {
+            "move": [
+              0,
+              1
+            ]
+          },
+          "left": {
+            "move": [
+              -1,
+              0
+            ]
+          },
+          "right": {
+            "move": [
+              1,
+              0
+            ]
+          },
+          "select": {
+            "action": "selectOrMove"
+          }
+        }
+      }
+    },
+    {
+      "name": "wrap",
+      "type": "wrap",
+      "config": {
+        "target": "cursor"
+      }
+    },
+    {
+      "name": "collision",
+      "type": "collision",
+      "config": {
+        "chessRules": true,
+        "turnBased": true
+      }
+    },
+    {
+      "name": "scoring",
+      "type": "scoring",
+      "config": {
+        "resource": "state",
+        "captureScores": {
+          "pawn": 1,
+          "knight": 3,
+          "bishop": 3,
+          "rook": 5,
+          "queen": 9,
+          "king": 1000
+        }
+      }
+    },
+    {
+      "name": "gameOver",
+      "type": "gameOver",
+      "config": {
+        "condition": "state.gameOver"
+      }
+    },
+    {
+      "name": "render",
+      "type": "render",
+      "config": {
+        "layers": [
+          {
+            "source": "board",
+            "type": "chessBoard",
+            "lightSquares": "#f0d9b5",
+            "darkSquares": "#b58863"
+          },
+          {
+            "source": "ChessPiece",
+            "type": "piece"
+          },
+          {
+            "source": "cursor",
+            "type": "highlight"
+          },
+          {
+            "source": "Selected",
+            "type": "highlight",
+            "color": "#0f0"
+          },
+          {
+            "source": "state",
+            "type": "hud",
+            "fields": [
+              "currentTurn",
+              "moveCount"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "rules": [
+    {
+      "when": {
+        "event": "pieceCaptured"
+      },
+      "then": {
+        "increment": {
+          "state.score": "event.value"
+        }
+      }
+    },
+    {
+      "when": {
+        "event": "moveMade"
+      },
+      "then": {
+        "increment": {
+          "state.moveCount": 1
+        },
+        "set": {
+          "state.currentTurn": "event.nextTurn"
+        }
+      }
+    },
+    {
+      "when": {
+        "condition": "state.whiteInCheck && state.currentTurn === 'white'"
+      },
+      "then": {
+        "action": "checkForCheckmate"
+      }
+    },
+    {
+      "when": {
+        "condition": "state.blackInCheck && state.currentTurn === 'black'"
+      },
+      "then": {
+        "action": "checkForCheckmate"
+      }
+    },
+    {
+      "when": {
+        "event": "checkmate"
+      },
+      "then": {
+        "set": {
+          "state.gameOver": true
+        }
+      }
+    }
+  ]
+}
