@@ -117,6 +117,22 @@
           }
         }
       }
+    },
+    "ValidMove": {
+      "fields": {
+        "fromX": {
+          "type": "int"
+        },
+        "fromY": {
+          "type": "int"
+        },
+        "toX": {
+          "type": "int"
+        },
+        "toY": {
+          "type": "int"
+        }
+      }
     }
   },
   "archetypes": {
@@ -303,7 +319,9 @@
       "currentTurn": "white",
       "whiteInCheck": false,
       "blackInCheck": false,
-      "moveCount": 0
+      "moveCount": 0,
+      "selectedPiece": null,
+      "validMoves": []
     }
   },
   "systems": [
@@ -576,7 +594,7 @@
             ]
           },
           "select": {
-            "action": "selectOrMove"
+            "emit": "pieceSelect"
           }
         }
       }
@@ -589,10 +607,13 @@
       }
     },
     {
-      "name": "collision",
-      "type": "collision",
+      "name": "chessLogic",
+      "type": "custom",
+      "on": "pieceSelect",
       "config": {
-        "chessRules": true,
+        "selectPiece": true,
+        "validateMoves": true,
+        "handleCaptures": true,
         "turnBased": true
       }
     },
@@ -643,6 +664,11 @@
             "color": "#0f0"
           },
           {
+            "source": "ValidMove",
+            "type": "highlight",
+            "color": "#00f"
+          },
+          {
             "source": "state",
             "type": "hud",
             "fields": [
@@ -680,18 +706,12 @@
     },
     {
       "when": {
-        "condition": "state.whiteInCheck && state.currentTurn === 'white'"
+        "event": "pieceSelected"
       },
       "then": {
-        "action": "checkForCheckmate"
-      }
-    },
-    {
-      "when": {
-        "condition": "state.blackInCheck && state.currentTurn === 'black'"
-      },
-      "then": {
-        "action": "checkForCheckmate"
+        "set": {
+          "state.selectedPiece": "event.pieceId"
+        }
       }
     },
     {
