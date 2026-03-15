@@ -188,7 +188,7 @@
           { "type": "entities", "query": ["Position", "ChessPiece"], "component": "ChessPiece", "renderAs": "text", "displayField": "displayChar", "colorField": "color", "fontScale": 0.75 },
           { "type": "highlight", "source": "cursor", "color": "#ffff00", "lineWidth": 3 },
           { "type": "highlight", "source": "Selected", "color": "#00ff00", "lineWidth": 3 },
-          { "type": "hud", "fields": ["currentTurn", "moveCount", "score"], "fontSize": 18 },
+          { "type": "hud", "fields": ["currentTurn", "moveCount", "score"], "fontSize": 18, "labels": { "currentTurn": "Turn", "moveCount": "Moves" } },
           { "type": "gameOver", "title": "CHECKMATE!", "titleColor": "#ff4444" }
         ]
       }
